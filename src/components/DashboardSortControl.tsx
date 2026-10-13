@@ -49,7 +49,7 @@ export function DashboardSortControl({
       role="radiogroup"
       aria-label="Sort projects and videos"
       onKeyDown={handleKeyDown}
-      className="flex flex-shrink-0 items-center border-2 border-[#1a1a1a] bg-[#f0f0e8] p-0.5 shadow-[4px_4px_0px_0px_var(--shadow-color)]"
+      className="flex flex-shrink-0 items-center border-2 border-[#1a1a1a] bg-[#f0f0e8] p-0.5 shadow-[4px_4px_0px_0px_var(--shadow-color)] has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-[var(--accent)]"
     >
       {options.map((option, index) => {
         const selected = value === option.value;
@@ -68,7 +68,7 @@ export function DashboardSortControl({
             tabIndex={selected ? 0 : -1}
             onClick={() => select(option.value)}
             className={cn(
-              "flex h-8 items-center gap-1.5 px-2.5 text-xs font-bold tracking-wider uppercase transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1a1a1a] sm:px-3",
+              "flex h-8 items-center gap-1.5 px-2.5 text-xs font-bold tracking-wider uppercase transition-colors focus-visible:outline-none sm:px-3",
               selected
                 ? "bg-[#1a1a1a] text-[#f0f0e8]"
                 : "text-[#888] hover:bg-[#e8e8e0] hover:text-[#1a1a1a]",
