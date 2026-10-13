@@ -9,7 +9,9 @@ const options: { value: DashboardSort; label: string; Icon: typeof Clock3 }[] = 
 ];
 
 /** Binary toggle pill for the two dashboard sort orders. Only two options
- * exist, so this avoids opening a popup just to pick the other one. */
+ * exist, so this avoids opening a popup just to pick the other one. Icon-only
+ * because the header's action row scrolls instead of wrapping, and labels push
+ * the other actions off-screen at common laptop widths. */
 export function DashboardSortControl({
   value,
   onChange,
@@ -68,14 +70,13 @@ export function DashboardSortControl({
             tabIndex={selected ? 0 : -1}
             onClick={() => select(option.value)}
             className={cn(
-              "flex h-8 items-center gap-1.5 px-2.5 text-xs font-bold tracking-wider uppercase transition-colors focus-visible:outline-none sm:px-3",
+              "flex h-8 w-9 items-center justify-center transition-colors focus-visible:outline-none",
               selected
                 ? "bg-[#1a1a1a] text-[#f0f0e8]"
                 : "text-[#888] hover:bg-[#e8e8e0] hover:text-[#1a1a1a]",
             )}
           >
             <Icon className="h-4 w-4" aria-hidden="true" />
-            <span className="hidden md:inline">{option.label}</span>
           </button>
         );
       })}
