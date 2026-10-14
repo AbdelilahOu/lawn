@@ -198,7 +198,7 @@ export function DashboardHeader({
 
       {/* Children — own row below lg so the breadcrumb keeps its width, middle column on desktop */}
       {children && (
-        <div className="scrollbar-hidden col-span-full flex min-w-0 items-center gap-2 overflow-x-auto pb-2 sm:gap-3 lg:col-span-1 lg:col-start-2 lg:row-start-1 lg:h-14 lg:pb-0 lg:pl-4 [&>*]:shrink-0 lg:[&>*:first-child]:ml-auto">
+        <div className="scrollbar-hidden col-span-full flex min-w-0 items-center gap-2 overflow-x-auto pb-2 sm:gap-3 lg:col-span-1 lg:col-start-2 lg:row-start-1 lg:h-14 lg:px-4 lg:pb-0 [&>*]:shrink-0 lg:[&>*:first-child]:ml-auto">
           {children}
         </div>
       )}

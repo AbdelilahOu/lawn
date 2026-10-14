@@ -856,7 +856,7 @@ export default function ProjectPage({
               <FolderPlus className="h-4 w-4" aria-hidden="true" />
             </button>
           )}
-          {canUpload && <UploadButton onFilesSelected={handleFilesSelected} />}
+          {canUpload && <UploadButton variant="flat" onFilesSelected={handleFilesSelected} />}
         </div>
       </DashboardHeader>
 

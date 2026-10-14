@@ -179,7 +179,7 @@ export default function TeamPage() {
       <DashboardHeader paths={[{ label: team?.slug ?? "team" }]}>
         <DashboardSortControl value={sort} onChange={setSort} />
         {canCreateProject && (
-          <Button onClick={() => setCreateDialogOpen(true)}>
+          <Button variant="flat" onClick={() => setCreateDialogOpen(true)}>
             <Plus className="h-4 w-4 sm:mr-1.5" />
             <span className="hidden sm:inline">New project</span>
           </Button>
