@@ -1,8 +1,8 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useParams } from "@tanstack/react-router";
 import { UserButton } from "@clerk/tanstack-react-start";
 import { Moon, Search, Sun } from "lucide-react";
 import { useTheme } from "@/components/theme/ThemeToggle";
-import React, { Fragment } from "react";
+import React from "react";
 import { useConvex } from "convex/react";
 import type { Id } from "@convex/_generated/dataModel";
 import { cn } from "@/lib/utils";
@@ -75,15 +75,12 @@ export type PathSegment = {
 
 function BreadcrumbSegment({
   path,
-  isIntermediate,
-  collapsesFirst,
+  className,
+  hideSeparatorOnPhone = false,
 }: {
   path: PathSegment;
-  isIntermediate: boolean;
-  /** Middle folders absorb the shrinking above phone width, so the team and
-   * current crumbs never pick up a stray sub-pixel ellipsis. Custom labels (the
-   * video title) truncate themselves, so they can share the squeeze. */
-  collapsesFirst: boolean;
+  className?: string;
+  hideSeparatorOnPhone?: boolean;
 }) {
   const { ref, isDraggedOver, canDropHere } = useFolderDropTarget<HTMLDivElement>({
     disabled: !path.drop || path.drop.disabled,
@@ -97,17 +94,17 @@ function BreadcrumbSegment({
     <div
       ref={ref}
       className={cn(
-        `${isIntermediate ? "hidden sm:flex" : "flex"} min-w-0 items-center`,
-        collapsesFirst
-          ? "min-w-12 shrink"
-          : typeof path.label === "string"
-            ? "shrink sm:shrink-0"
-            : "shrink",
+        "flex min-w-0 items-center",
+        className,
         isDraggedOver && canDropHere && "bg-[#2d5a2d]/10 text-[#2d5a2d]",
         isDraggedOver && !canDropHere && "bg-[#dc2626]/10",
       )}
     >
-      <span className="mr-2 flex-shrink-0 text-[#888]">/</span>
+      <span
+        className={cn("mr-2 flex-shrink-0 text-[#888]", hideSeparatorOnPhone && "hidden sm:inline")}
+      >
+        /
+      </span>
       {path.href ? (
         <Link
           to={path.href}
@@ -142,6 +139,12 @@ export function DashboardHeader({
 }) {
   const convex = useConvex();
   const prewarmHomeIntentHandlers = useRoutePrewarmIntent(() => prewarmDashboardIndex(convex));
+  // On team routes the first crumb is the team. Phones drop the logo so the team
+  // and current crumbs keep the room.
+  const onTeamRoute = typeof useParams({ strict: false }).teamSlug === "string";
+  const [first, ...rest] = paths;
+  const middle = rest.slice(0, -1);
+  const current = rest.at(-1);
 
   return (
     <header className="grid flex-shrink-0 grid-cols-[minmax(0,1fr)_auto] items-center border-b-2 border-[#1a1a1a] bg-[#f0f0e8] px-4 sm:px-6 lg:grid-cols-[minmax(0,1fr)_auto_auto]">
@@ -150,25 +153,37 @@ export function DashboardHeader({
         <Link
           to="/dashboard"
           preload="intent"
-          className="mr-2 flex-shrink-0 transition-colors hover:text-[#2d5a2d]"
+          className={cn(
+            "mr-2 flex-shrink-0 transition-colors hover:text-[#2d5a2d]",
+            onTeamRoute && "hidden sm:inline",
+          )}
           {...prewarmHomeIntentHandlers}
         >
           lawn.
         </Link>
-        {paths.map((path, index) => {
-          const isIntermediate = paths.length >= 2 && index < paths.length - 1;
-          return (
-            <Fragment key={index}>
-              <BreadcrumbSegment
-                path={path}
-                isIntermediate={isIntermediate}
-                collapsesFirst={index > 0 && index < paths.length - 1}
-              />
-              {/* The first crumb is the team on every team route. */}
-              {index === 0 && <TeamSwitcher />}
-            </Fragment>
-          );
-        })}
+        {first && (
+          <BreadcrumbSegment
+            path={first}
+            hideSeparatorOnPhone={onTeamRoute}
+            // Capped instead of flex-shrunk so it never picks up a stray sub-pixel
+            // ellipsis; when it is the only crumb it is the current one and shrinks.
+            className={current ? "max-w-32 shrink-0 sm:max-w-52" : "shrink"}
+          />
+        )}
+        {first && <TeamSwitcher />}
+        {middle.length > 0 && (
+          // Grows from zero into whatever room is left, so middle folders truncate
+          // first and the current crumb only shrinks once each is down to "/ X…".
+          <div
+            className="hidden max-w-max grow basis-0 overflow-hidden sm:flex"
+            style={{ minWidth: `${middle.length * 3}rem` }}
+          >
+            {middle.map((path, index) => (
+              <BreadcrumbSegment key={index} path={path} className="min-w-12 shrink" />
+            ))}
+          </div>
+        )}
+        {current && <BreadcrumbSegment path={current} className="shrink" />}
       </div>
 
       {/* User controls — pinned top-right */}
