@@ -73,7 +73,8 @@ import { DashboardHeader } from "@/components/DashboardHeader";
 import { createRequestEpoch } from "@/lib/requestEpoch";
 import { DashboardSortControl } from "@/components/DashboardSortControl";
 import { ExpandableTitle } from "@/components/ExpandableTitle";
-import { sortDashboardItems, type DashboardSort } from "@/lib/dashboardSort";
+import { sortDashboardItems } from "@/lib/dashboardSort";
+import { useDashboardSort } from "@/lib/useDashboardSort";
 
 type ViewMode = "grid" | "list";
 const PROJECT_PRESENCE_VIDEO_LIMIT = 40;
@@ -461,7 +462,7 @@ export default function ProjectPage({
   const navigate = useNavigate({});
   const pathname = useLocation().pathname;
   const convex = useConvex();
-  const [sort, setSort] = useState<DashboardSort>("last-uploaded");
+  const [sort, setSort] = useDashboardSort();
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
 
   const {

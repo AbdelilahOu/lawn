@@ -26,7 +26,8 @@ import { useMoveActions } from "@/lib/dnd/useMoveActions";
 import { useFolderDropTarget } from "@/lib/dnd/useFolderDropTarget";
 import type { DragPayload } from "@/lib/dnd/payload";
 import { DashboardSortControl } from "@/components/DashboardSortControl";
-import { sortDashboardItems, type DashboardSort } from "@/lib/dashboardSort";
+import { sortDashboardItems } from "@/lib/dashboardSort";
+import { useDashboardSort } from "@/lib/useDashboardSort";
 import { useRegisterPaletteCommands, type PaletteCommand } from "@/lib/commandPalette";
 
 export default function TeamPage() {
@@ -40,7 +41,7 @@ export default function TeamPage() {
   const deleteProject = useMutation(api.projects.remove);
   const { moveFromDrop } = useMoveActions();
   const [dndError, setDndError] = useState<string | null>(null);
-  const [sort, setSort] = useState<DashboardSort>("last-uploaded");
+  const [sort, setSort] = useDashboardSort();
   const sortedProjects = useMemo(() => sortDashboardItems(projects ?? [], sort), [projects, sort]);
 
   const handleDropMove = (payload: DragPayload, destProjectId?: Id<"projects">) => {
